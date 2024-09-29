@@ -15,9 +15,14 @@ Route::get('/about', function () {
 });
 
 Route::get('/posts', function () {
-    // $posts = Post::with(['author', 'category'])->latest()->get();
-    $posts = Post::latest()->get();
-    return view('posts', ['title' => 'Blog', 'posts' => $posts]);
+    // $posts = Post::latest();
+    // dump(request('search')); //untuk test atau debug variabel yang ingin ditangkap
+
+    // if(request('search')) {
+    //     $posts->where('title', 'like', '%' . request('search') . '%');
+    // }
+    
+    return view('posts', ['title' => 'Blog', 'posts' => Post::filter(request(['search', 'category', 'author']))->latest()->paginate(9)->withQueryString()]);
 });
 
 Route::get('/posts/{post:slug}', function (Post $post) {
